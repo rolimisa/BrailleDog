@@ -1,154 +1,228 @@
-import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, Text } from "react-native";
-import Exerciciosdeleitura from "../components/Exerciciosdeleitura";
-import MaterialButtonViolet from "../components/MaterialButtonViolet";
-import MaterialButtonViolet1 from "../components/MaterialButtonViolet1";
-import MaterialButtonViolet3 from "../components/MaterialButtonViolet3";
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 
-function Exerciciosleitura(props) {
+// Lista de palavras
+const palavrasOriginais = [
+  "Casa", "Porta", "Janela", "Cama", "Mesa", "Cadeira", "Telefone", "Chave", "Roupa", "Sapato",
+  "Pão", "Leite", "Arroz", "Feijão", "Ovo", "Água", "Fruta", "Maçã", "Banana", "Uva",
+  "Mãe", "Pai", "Irmão", "Irmã", "Avó", "Avô", "Amigo", "Criança", "Bebê", "Professor",
+  "Cachorro", "Gato", "Pássaro", "Peixe", "Cavalo", "Vaca", "Leão", "Elefante", "Macaco", "Coelho",
+  "Azul", "Vermelho", "Verde", "Amarelo", "Preto", "Branco", "Laranja", "Roxo", "Marrom", "Cinza",
+  "Um", "Dois", "Três", "Quatro", "Cinco", "Seis", "Sete", "Oito", "Nove", "Dez",
+  "Hoje", "Amanhã", "Ontem", "Manhã", "Tarde", "Noite", "Segunda", "Terça", "Quarta", "Quinta",
+  "Escola", "Rua", "Praça", "Hospital", "Igreja", "Mercado", "Parque", "Biblioteca", "Estação", "Ponto",
+  "Feliz", "Triste", "Bravo", "Medo", "Amor", "Cansaço", "Calma", "Raiva", "Alegria", "Esperança",
+  "Sol", "Lua", "Estrela", "Livro", "Caneta", "Papel", "Computador", "Bola", "Música", "Som"
+];
+
+const ExercicioLeitura = ({ navigation }) => {
+  const [index, setIndex] = useState(0);
+  const [palavraComLacuna, setPalavraComLacuna] = useState('');
+  const [letraCorreta, setLetraCorreta] = useState('');
+  const [input, setInput] = useState('');
+  const [pontos, setPontos] = useState(0);
+
+  const letras = ['A', 'E', 'I', 'O', 'U', 'M', 'P', 'R', 'L', 'S', 'T', 'B', 'C', 'D', 'N'];
+
+  // Preparar a palavra para mostrar (com lacuna aleatória)
+  const prepararPalavra = () => {
+    const palavra = palavrasOriginais[index].toUpperCase();
+    if (palavra.length > 1) {
+      const posicao = Math.floor(Math.random() * palavra.length);
+      const letra = palavra[posicao];
+      const palavraComEspaco = palavra.substring(0, posicao) + '_' + palavra.substring(posicao + 1);
+      setPalavraComLacuna(palavraComEspaco);
+      setLetraCorreta(letra);
+    } else {
+      // Se a palavra for de 1 letra só (raro), não modifica
+      setPalavraComLacuna(palavra);
+      setLetraCorreta('');
+    }
+  };
+
+  useEffect(() => {
+    prepararPalavra();
+  }, [index]);
+
+  const handlePress = (letra) => {
+    setInput(letra);
+  };
+
+  const proximaPalavra = () => {
+    if (index < palavrasOriginais.length - 1) {
+      setIndex(index + 1);
+      setInput('');
+    } else {
+      alert(`Fim dos exercícios! 🏆\nPontuação final: ${pontos}/${palavrasOriginais.length}`);
+      navigation.goBack();
+    }
+  };
+
+  const handleOk = () => {
+    if (input.toUpperCase() === letraCorreta.toUpperCase()) {
+      alert('✅ Correto!');
+      setPontos(pontos + 1);
+      proximaPalavra();
+    } else {
+      alert('❌ Errado! Tente de novo!');
+      setInput('');
+    }
+  };
+
+  const handlePular = () => {
+    proximaPalavra();
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar animated barStyle="dark-content" />
-      <Exerciciosdeleitura
-        style={styles.cupertinoHeaderWithBackground5}
-      ></Exerciciosdeleitura>
-      <View style={styles.materialButtonViolet4Row}>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet4}
-        ></MaterialButtonViolet>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet5}
-        ></MaterialButtonViolet>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>◀ Back</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerText}>EXERCÍCIOS DE LEITURA</Text>
       </View>
-      <Text style={styles.palavraDaImagem}>PALAVRA DA IMAGEM</Text>
-      <Text style={styles.palavraBraille}>PALAVRA BRAILLE</Text>
-      <MaterialButtonViolet1
-        style={styles.materialButtonViolet1}
-      ></MaterialButtonViolet1>
-      <MaterialButtonViolet3
-        style={styles.materialButtonViolet3}
-      ></MaterialButtonViolet3>
-      <View style={styles.materialButtonViolet7Row}>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet7}
-        ></MaterialButtonViolet>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet6}
-        ></MaterialButtonViolet>
+
+      {/* Progresso */}
+      <Text style={styles.progressText}>
+        Exercício {index + 1} de {palavrasOriginais.length}
+      </Text>
+
+      {/* Pontuação */}
+      <Text style={styles.scoreText}>
+        Pontos: {pontos}
+      </Text>
+
+      {/* Letras para clicar */}
+      <View style={styles.circleContainer}>
+        {letras.map((letra, i) => (
+          <TouchableOpacity
+            key={i}
+            style={styles.circleButton}
+            onPress={() => handlePress(letra)}
+          >
+            <Text style={styles.circleText}>{letra}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
-      <View style={styles.materialButtonViolet9Row}>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet9}
-        ></MaterialButtonViolet>
-        <MaterialButtonViolet
-          style={styles.materialButtonViolet8}
-        ></MaterialButtonViolet>
-      </View>
+
+      {/* Palavra da imagem */}
+      <Text style={styles.palavraImagem}>PALAVRA DA IMAGEM</Text>
+      <Text style={styles.palavraBase}>{palavraComLacuna}</Text>
+
+      {/* Input bloqueado */}
+      <Text style={styles.label}>LETRA ESCOLHIDA</Text>
+      <TextInput
+        style={styles.input}
+        value={input}
+        placeholder="Clique nas letras"
+        editable={false}
+      />
+
+      {/* Botões */}
+      <TouchableOpacity style={styles.button} onPress={handleOk}>
+        <Text style={styles.buttonText}>OK</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handlePular}>
+        <Text style={styles.buttonText}>PULAR</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#000000",
-    backgroundColor: "rgba(162,196,234,1)"
+    backgroundColor: '#ADD8E6',
+    alignItems: 'center',
+    paddingTop: 40,
   },
-  cupertinoHeaderWithBackground5: {
-    height: 52,
-    width: 375,
-    marginTop: 58,
-    marginLeft: -1
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#5D6D7E',
+    width: '100%',
+    padding: 15,
   },
-  materialButtonViolet4: {
-    height: 88,
-    width: 83,
-    borderRadius: 97
+  backText: {
+    color: 'white',
+    fontSize: 16,
+    marginRight: 10,
   },
-  materialButtonViolet5: {
-    height: 88,
-    width: 83,
-    borderRadius: 97,
-    marginLeft: 71
-  },
-  materialButtonViolet4Row: {
-    height: 88,
-    flexDirection: "row",
-    marginTop: 231,
-    marginLeft: 65,
-    marginRight: 73
-  },
-  palavraDaImagem: {
-    fontFamily: "comic-sans-ms-regular",
-    color: "#121212",
-    height: 60,
-    width: 350,
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: 28,
-    marginLeft: 18
-  },
-  palavraBraille: {
-    fontFamily: "comic-sans-ms-regular",
-    color: "#121212",
-    height: 60,
-    width: 350,
+  headerText: {
+    color: 'white',
     fontSize: 20,
-    textAlign: "center",
-    marginTop: 42,
-    marginLeft: 12
+    fontWeight: 'bold',
   },
-  materialButtonViolet1: {
-    height: 32,
-    width: 171,
-    borderRadius: 100,
-    marginTop: 51,
-    marginLeft: 107
+  progressText: {
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-  materialButtonViolet3: {
-    height: 32,
-    width: 171,
-    borderRadius: 100,
-    marginTop: -83,
-    marginLeft: 107
+  scoreText: {
+    marginTop: 5,
+    fontSize: 16,
+    fontWeight: '600',
   },
-  materialButtonViolet7: {
-    height: 88,
-    width: 83,
-    borderRadius: 97
+  circleContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginVertical: 20,
+    gap: 20,
   },
-  materialButtonViolet6: {
-    height: 88,
-    width: 83,
-    borderRadius: 97,
-    marginLeft: 71
+  circleButton: {
+    backgroundColor: '#DDE2B6',
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    elevation: 3,
   },
-  materialButtonViolet7Row: {
-    height: 88,
-    flexDirection: "row",
-    marginTop: -414,
-    marginLeft: 65,
-    marginRight: 73
+  circleText: {
+    fontSize: 22,
+    fontWeight: 'bold',
   },
-  materialButtonViolet9: {
-    height: 88,
-    width: 83,
-    borderRadius: 97
+  palavraImagem: {
+    fontSize: 20,
+    marginTop: 10,
+    fontWeight: 'bold',
   },
-  materialButtonViolet8: {
-    height: 88,
-    width: 83,
-    borderRadius: 97,
-    marginLeft: 71
+  palavraBase: {
+    fontSize: 28,
+    marginVertical: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  materialButtonViolet9Row: {
-    height: 88,
-    flexDirection: "row",
-    marginTop: -195,
-    marginLeft: 65,
-    marginRight: 73
+  label: {
+    fontSize: 16,
+    marginTop: 20,
+  },
+  input: {
+    width: '60%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#5D6D7E',
+    padding: 15,
+    borderRadius: 25,
+    width: '60%',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   }
 });
 
-export default Exerciciosleitura;
+export default ExercicioLeitura;

@@ -1,19 +1,28 @@
-import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, Text } from "react-native";
-import Digitepalavras from "../components/Digitepalavras";
-import CupertinoSearchBarWithMic1 from "../components/CupertinoSearchBarWithMic1";
+// DigitarPalavra.js
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
-function Digitepalavras(props) {
+export default function DigitarPalavra({ navigation }) {
+  const [palavra, setPalavra] = useState('');
+
+  const traduzirPalavra = () => {
+    console.log('Palavra digitada:', palavra);
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar animated barStyle="dark-content" />
-      <Text style={styles.bomDia2}>DIGITE A PALAVRA DESEJADA:</Text>
-      <Digitepalavras
-        style={styles.cupertinoHeaderWithBackground2}
-      ></Digitepalavras>
-      <CupertinoSearchBarWithMic1
-        style={styles.cupertinoSearchBarWithMic1}
-      ></CupertinoSearchBarWithMic1>
+      <Text style={styles.title}>Digite a palavra</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Digite aqui..."
+        value={palavra}
+        onChangeText={setPalavra}
+      />
+
+      <TouchableOpacity style={styles.button} onPress={traduzirPalavra}>
+        <Text style={styles.buttonText}>Traduzir</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -21,32 +30,34 @@ function Digitepalavras(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#000000",
-    backgroundColor: "rgba(162,196,234,1)"
+    backgroundColor: '#a9c2e7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
-  bomDia2: {
-    fontFamily: "comic-sans-ms-regular",
-    color: "#121212",
-    height: 97,
-    width: 344,
-    fontSize: 30,
-    textAlign: "center",
-    marginTop: 173,
-    marginLeft: 14
+  title: {
+    fontSize: 24,
+    marginBottom: 30,
+    fontWeight: 'bold',
   },
-  cupertinoHeaderWithBackground2: {
-    height: 57,
-    width: 375,
-    marginTop: -221,
-    marginLeft: -1
+  input: {
+    width: '80%',
+    backgroundColor: '#fff',
+    padding: 15,
+    borderRadius: 10,
+    fontSize: 18,
+    marginBottom: 20,
   },
-  cupertinoSearchBarWithMic1: {
-    height: 89,
-    width: 353,
-    marginTop: 266,
-    marginLeft: 10
-  }
+  button: {
+    backgroundColor: '#dfe4b7',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: 'black',
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
-
-export default Digitepalavras;

@@ -1,68 +1,50 @@
-import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, Text } from "react-native";
-import Svg, { Ellipse } from "react-native-svg";
-import Exerciciosbraille from "../components/Exerciciosbraille";
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-function Exerciciosbraille(props) {
+const ExerciciosBraille = () => {
   return (
     <View style={styles.container}>
-      <StatusBar animated barStyle="dark-content" />
-      <View style={styles.ellipseStack}>
-        <Svg viewBox="0 0 182.4 183.05" style={styles.ellipse}>
-          <Ellipse
-            strokeWidth={2}
-            cx={91}
-            cy={92}
-            rx={90}
-            ry={91}
-            fill="rgba(253,237,124,0.62)"
-            stroke="rgba(0,0,0,1)"
-          ></Ellipse>
-        </Svg>
-        <Text style={styles.comoVoceEstaHoje}>EXERCÍCIOS DE {"\n"}LEITURA</Text>
-      </View>
-      <Exerciciosbraille style={styles.materialHeader1}></Exerciciosbraille>
+      <Text style={styles.header}>EXERCÍCIOS</Text>
+
+      <TouchableOpacity style={styles.exerciseButton}>
+        <Text style={styles.exerciseText}>EXERCÍCIOS DE LEITURA</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(162,196,234,1)",
-    borderWidth: 1,
-    borderColor: "#000000"
+    backgroundColor: '#ADD8E6', // Azul claro
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  ellipse: {
-    top: 0,
-    left: 0,
-    width: 182,
-    height: 183,
-    position: "absolute"
+  header: {
+    backgroundColor: '#5D6D7E', // Azul mais escuro
+    width: '100%',
+    padding: 20,
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  comoVoceEstaHoje: {
-    position: "absolute",
-    fontFamily: "roboto-700",
-    color: "#121212",
-    textAlign: "center",
-    fontSize: 19,
-    width: 132,
-    height: 89,
-    top: 47,
-    left: 25
+  exerciseButton: {
+    marginTop: 100,
+    backgroundColor: '#DDE2B6', // Verde claro
+    borderRadius: 50,
+    padding: 20,
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
   },
-  ellipseStack: {
-    width: 182,
-    height: 183,
-    marginTop: 313,
-    marginLeft: 95
-  },
-  materialHeader1: {
-    height: 56,
-    width: 375,
-    marginTop: -444
+  exerciseText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
   }
 });
 
-export default Exerciciosbraille;
-
+export default ExerciciosBraille;

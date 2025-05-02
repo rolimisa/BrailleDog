@@ -1,28 +1,75 @@
-import React, { Component } from "react";
-import { StyleSheet, View, StatusBar, Text, Image } from "react-native";
-import MaterialCheckboxWithLabel from "../components/MaterialCheckboxWithLabel";
-import Email from "../components/Email";
-import MaterialRightIconTextbox1 from "../components/MaterialRightIconTextbox1";
-import Cadastrado from "../components/Cadastrado";
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, CheckBox, Alert } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function Cadastrar(props) {
+export default function Cadastrar({ navigation }) {
+  const [rememberMe, setRememberMe] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleCadastro = () => {
+    if (username.trim() === '' || password.trim() === '') {
+      Alert.alert('Erro', 'Preencha todos os campos para se cadastrar.');
+    } else {
+      Alert.alert('Sucesso', 'Cadastro realizado!');
+      // Aqui você pode adicionar lógica para salvar o cadastro
+      // Exemplo: navigation.navigate('Login');
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <StatusBar animated barStyle="dark-content" />
-      <Text style={styles.brailledog}>BRAILLEDOG</Text>
-      <Image
-        source={require("../assets/images/Imagem_07-04-2025_às_21.42.jpeg")}
+      {/* Imagem do BrailleDog */}
+      <Image 
+        source={require('../assets/brailledog.png')} 
+        style={styles.logo}
         resizeMode="cover"
-        style={styles.logotipo}
-      ></Image>
-      <MaterialCheckboxWithLabel
-        style={styles.materialCheckboxWithLabel}
-      ></MaterialCheckboxWithLabel>
-      <Email style={styles.senha}></Email>
-      <MaterialRightIconTextbox1
-        style={styles.materialRightIconTextbox1}
-      ></MaterialRightIconTextbox1>
-      <Cadastrado style={styles.cupertinoButtonPurple1}></Cadastrado>
+      />
+
+      {/* Título */}
+      <Text style={styles.title}>BRAILLEDOG</Text>
+
+      {/* Campo de usuário */}
+      <View style={styles.inputContainer}>
+        <TextInput 
+          placeholder="Nome de Usuário"
+          style={styles.input}
+          placeholderTextColor="#555"
+          value={username}
+          onChangeText={setUsername}
+        />
+        <Icon name="account" size={24} color="#555" />
+      </View>
+
+      {/* Campo de senha */}
+      <View style={styles.inputContainer}>
+        <TextInput 
+          placeholder="Senha"
+          style={styles.input}
+          placeholderTextColor="#555"
+          secureTextEntry={!passwordVisible}
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
+          <Icon name={passwordVisible ? "eye-off" : "eye"} size={24} color="#555" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Lembrar senha */}
+      <View style={styles.checkboxContainer}>
+        <CheckBox
+          value={rememberMe}
+          onValueChange={setRememberMe}
+        />
+        <Text style={styles.checkboxLabel}>Lembrar senha</Text>
+      </View>
+
+      {/* Botão Cadastrar */}
+      <TouchableOpacity style={styles.button} onPress={handleCadastro}>
+        <Text style={styles.buttonText}>CADASTRAR</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -30,65 +77,66 @@ function Cadastrar(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(162,196,234,1)",
-    borderWidth: 1,
-    borderColor: "#000000"
+    backgroundColor: '#a9c2e7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
-  brailledog: {
-    fontFamily: "roboto-700",
-    color: "#121212",
-    height: 56,
-    width: 290,
-    fontSize: 40,
-    textAlign: "center",
-    marginTop: 430,
-    alignSelf: "center"
+  logo: {
+    width: 250,
+    height: 250,
+    borderRadius: 30,
+    marginBottom: 20,
   },
-  logotipo: {
-    width: 280,
-    height: 337,
-    borderRadius: 73,
-    backgroundColor: "rgba(0,0,0,1)",
-    marginTop: -398,
-    marginLeft: 47
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    fontFamily: 'Comic Sans MS',
+    color: '#000',
   },
-  materialCheckboxWithLabel: {
-    height: 26,
-    width: 107,
-    backgroundColor: "rgba(230, 230, 230,1)",
-    shadowColor: "rgba(0,0,0,1)",
-    shadowOffset: {
-      width: 3,
-      height: 3
-    },
-    elevation: 5,
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    overflow: "visible",
-    marginTop: 178,
-    marginLeft: 219
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#dfe4b7',
+    borderRadius: 10,
+    marginVertical: 10,
+    paddingHorizontal: 10,
+    width: '100%',
+    height: 50,
+    borderBottomWidth: 1,
+    borderColor: '#555',
+    justifyContent: 'space-between',
   },
-  senha: {
-    height: 33,
-    width: 280,
-    marginTop: -119,
-    marginLeft: 47
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#000',
   },
-  materialRightIconTextbox1: {
-    height: 33,
-    width: 280,
-    marginTop: 16,
-    marginLeft: 47
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    width: '100%',
   },
-  cupertinoButtonPurple1: {
-    height: 44,
-    width: 108,
-    borderRadius: 100,
+  checkboxLabel: {
+    marginLeft: 5,
+    fontSize: 14,
+    color: '#000',
+  },
+  button: {
+    backgroundColor: '#4a4aa3',
+    width: '80%',
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginVertical: 10,
     borderWidth: 2,
-    borderColor: "#000000",
-    marginTop: 95,
-    marginLeft: 136
-  }
+    borderColor: 'black',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
-
-export default Cadastrar;

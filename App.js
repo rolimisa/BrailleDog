@@ -1,45 +1,66 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, ScrollView } from 'react-native';
-import styles from './components/style';
-import alfBraille from './components/afalbraille'
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export default function BrailleConverte() {
+// Importações corretas das telas
+import MenuScreen from './components/menu';
+import AlfabetoScreen from './components/alfabetobraille';
+import NumerosScreen from './components/digitenumero';
+import PalavrasScreen from './components/palavrasbraille';
+import ConfiguracoesScreen from './components/configuracoes';
+import SobreScreen from './components/sobreapp';
+import PalavrasBraille from './components/palavrasbraille'; 
+import DigitarPalavra from './components/digitepalavra'; 
+import HistoricoPalavras from './components/historicopalavras'; 
+import ExercicioLeitura from './components/exerciciosleitura'; 
 
-  const [plvr, setPlvr] = useState('');
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
-  const plvrBraille = plvr.trim().toLowerCase().split('');
-
+// Stack de Palavras
+function PalavrasStack() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Digite uma palavra:</Text>
-
-      <TextInput
-        style={styles.input}
-        value={plvr}
-        onChangeText={setPlvr}
-        placeholder="Digite aqui"
-      />
-
-      <ScrollView horizontal style={styles.brailleContainer}>
-        {plvrBraille.map((plvB, index) => {
-          const brailleValue = alfBraille[plvB] || 0;
-          const binary = brailleValue.toString(2).padStart(6, '0').split('').reverse();
-
-          return (
-            <View key={index} style={styles.cela}>
-              {binary.map((bit, i) => (
-                <View
-                  key={i}
-                  style={[styles.circle, bit === '1' && styles.filled]}
-                />
-              ))}
-              <Text style={styles.plvLabel}>{plvB}</Text>
-            </View>
-          );
-        })}
-      </ScrollView>
-    </View>
+    <Stack.Navigator initialRouteName="PalavrasBraille">
+      <Stack.Screen name="PalavrasBraille" component={PalavrasBraille} />
+      <Stack.Screen name="DigitarPalavra" component={DigitarPalavra} />
+      <Stack.Screen name="HistoricoPalavras" component={HistoricoPalavras} />
+    </Stack.Navigator>
   );
 }
+
+// Stack de Exercícios
+function ExerciciosStack() {
+  return (
+    <Stack.Navigator initialRouteName="ExerciciosBraille">
+      <Stack.Screen name="ExerciciosBraille" component={ExerciciosScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ExercicioLeitura" component={ExercicioLeitura} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarStyle: { backgroundColor: '#a9c2e7', paddingBottom: 5, height: 70 },
+          tabBarLabelStyle: { fontSize: 20, fontWeight: 'bold' },
+          headerShown: false,
+        }}
+      >
+        <Tab.Screen name="Menu" component={MenuScreen} />
+        <Tab.Screen name="Alfabeto" component={AlfabetoScreen} />
+        <Tab.Screen name="Números" component={NumerosScreen} />
+        <Tab.Screen name="Palavras" component={PalavrasStack} />
+        <Tab.Screen name="Exercícios" component={ExerciciosStack} />
+        <Tab.Screen name="Configurações" component={ConfiguracoesScreen} />
+        <Tab.Screen name="Sobre" component={SobreScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
 
 
